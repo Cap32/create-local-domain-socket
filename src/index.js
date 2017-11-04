@@ -4,12 +4,17 @@ import { stat } from 'fs';
 import rimraf from 'rimraf';
 import callMaybe from 'call-me-maybe';
 
+export function ensureLocalDomainPath(path) {
+	if (process.platform === 'win32') {
+		path = path.replace(/^\//, '').replace(/\//g, '-');
+		return `\\\\.\\pipe\\${path}`;
+	}
+	return path;
+}
+
 export default function createLocalDomainSocket(server, path, callback) {
 	return callMaybe(callback, new Promise((resolve, reject) => {
-		if (process.platform === 'win32') {
-			path = path.replace(/^\//, '').replace(/\//g, '-');
-			path = `\\\\.\\pipe\\${path}`;
-		}
+		path = ensureLocalDomainPath(path);
 
 		server.on('error', function handleServerError(err) {
 			if (err.code === 'EADDRINUSE') {

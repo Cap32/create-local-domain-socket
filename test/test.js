@@ -1,5 +1,5 @@
 
-import createLocalDomainSocket from '../src';
+import createLocalDomainSocket, { ensureLocalDomainPath } from '../src';
 import { resolve } from 'path';
 import net from 'net';
 import { writeFileSync, existsSync } from 'fs';
@@ -22,7 +22,7 @@ const createClient = (path) => {
 	});
 };
 
-const path = resolve(__dirname, 'tmp.sock');
+const path = ensureLocalDomainPath(resolve(__dirname, 'tmp.sock'));
 
 afterEach(() => {
 	servers.forEach((server) => server.close());
