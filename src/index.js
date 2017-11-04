@@ -10,7 +10,7 @@ export default function createLocalDomainSocket(server, path, callback) {
 
 	server.on('error', function handleServerError(err) {
 		if (err.code === 'EADDRINUSE') {
-			var clientSocket = new net.Socket();
+			const clientSocket = new net.Socket();
 			clientSocket.on('error', function handleClientError(err) {
 				if (err.code === 'ECONNREFUSED') {
 					remove(path, function handleRemoveError(err) {
@@ -27,6 +27,7 @@ export default function createLocalDomainSocket(server, path, callback) {
 					code: 'EADDRINUSE',
 					syscall: 'listen',
 				});
+				clientSocket.destroy();
 				callback(error);
 			});
 		}
