@@ -3,6 +3,11 @@ import net from 'net';
 import { remove } from 'fs-extra';
 
 export default function createLocalDomainSocket(server, path, callback) {
+	if (process.platform === 'win32') {
+		path = path.replace(/^\//, '').replace(/\//g, '-');
+		path = `\\\\.\\pipe\\${path}`;
+	}
+
 	server.on('error', function handleServerError(err) {
 		if (err.code === 'EADDRINUSE') {
 			var clientSocket = new net.Socket();
