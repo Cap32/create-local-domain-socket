@@ -49,9 +49,11 @@ describe('createLocalDomainSocket', () => {
 
 	const path = ensureLocalDomainPath(resolve(__dirname, 'tmp.sock'));
 
-	afterEach(() => {
-		servers.forEach((server) => server.close());
+	afterEach(async () => {
 		clients.forEach((client) => client.destroy());
+		for (const server of servers) {
+			await new Promise((resolve) => server.close(resolve));
+		}
 		servers.clear();
 		clients.clear();
 	});
@@ -70,7 +72,9 @@ describe('createLocalDomainSocket', () => {
 	});
 
 	test('re-connect', async () => {
+		console.log('start re-connect');
 		const server1 = createServer();
+		console.log('server1 created');
 		await createLocalDomainSocket(server1, path);
 		console.log('server1 started', path);
 		const client = await createClient(path);
