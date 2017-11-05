@@ -21,7 +21,7 @@ describe('ensureLocalDomainPath', () => {
 		expect(path).toBe('\\\\.\\pipe\\test');
 	});
 
-	test('should convert to windows pipe path on darwin', () => {
+	test('should not convert to windows pipe path on darwin', () => {
 		process.platform = 'darwin';
 		const path = ensureLocalDomainPath('/test');
 		expect(path).toBe('/test');
@@ -72,12 +72,17 @@ describe('createLocalDomainSocket', () => {
 	test('re-connect', async () => {
 		const server1 = createServer();
 		await createLocalDomainSocket(server1, path);
+		console.log('server1 started', path);
 		const client = await createClient(path);
+		console.log('client1 connected', path);
 		client.destroy();
 		await new Promise((resolve) => server1.close(resolve));
+		console.log('server1 closed', path);
 		const server2 = createServer();
 		await createLocalDomainSocket(server2, path);
+		console.log('server2 started', path);
 		await createClient(path);
+		console.log('client2 connected', path);
 	});
 
 	test('should throw EADDRINUSE error if in use', async () => {
