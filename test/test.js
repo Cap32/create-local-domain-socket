@@ -72,21 +72,14 @@ describe('createLocalDomainSocket', () => {
 	});
 
 	test('re-connect', async () => {
-		console.log('start re-connect');
 		const server1 = createServer();
-		console.log('server1 created');
 		await createLocalDomainSocket(server1, path);
-		console.log('server1 started', path);
 		const client = await createClient(path);
-		console.log('client1 connected', path);
 		client.destroy();
 		await new Promise((resolve) => server1.close(resolve));
-		console.log('server1 closed', path);
 		const server2 = createServer();
 		await createLocalDomainSocket(server2, path);
-		console.log('server2 started', path);
 		await createClient(path);
-		console.log('client2 connected', path);
 	});
 
 	test('should throw EADDRINUSE error if in use', async () => {
