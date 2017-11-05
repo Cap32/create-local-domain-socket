@@ -75,6 +75,7 @@ $ npm install --save create-local-domain-socket
 ```js
 import WebSocket from 'ws';
 import createLocalDomainSocket from 'createLocalDomainSocket';
+import http from 'http';
 
 const server = http.createServer((req, res) => {
   const body = http.STATUS_CODES[426];
