@@ -3,6 +3,7 @@ import createLocalDomainSocket, { ensureLocalDomainPath } from '../src';
 import { resolve } from 'path';
 import net from 'net';
 import { writeFileSync, existsSync } from 'fs';
+import delay from 'delay';
 
 describe('ensureLocalDomainPath', () => {
 	const { platform } = process;
@@ -59,7 +60,6 @@ describe('createLocalDomainSocket', () => {
 	test('connect', async () => {
 		const server = createServer();
 		await createLocalDomainSocket(server, path);
-		console.log('server started', path);
 		await createClient(path);
 	});
 
@@ -75,6 +75,7 @@ describe('createLocalDomainSocket', () => {
 		await createLocalDomainSocket(server1, path);
 		await createClient(path);
 		server1.close();
+		await delay(2000);
 		const server2 = createServer();
 		await createLocalDomainSocket(server2, path);
 		await createClient(path);
@@ -90,17 +91,19 @@ describe('createLocalDomainSocket', () => {
 		});
 	});
 
-	test('should not throw EADDRINUSE if there is an empty file', async () => {
-		writeFileSync(path, '');
-		const server = createServer();
-		await createLocalDomainSocket(server, path);
-		await createClient(path);
-	});
+	if (process.platform !== 'win32') {
+		test('should not throw EADDRINUSE if there is an empty file', async () => {
+			writeFileSync(path, '');
+			const server = createServer();
+			await createLocalDomainSocket(server, path);
+			await createClient(path);
+		});
 
-	test('should socket file exists', async () => {
-		const server = createServer();
-		await createLocalDomainSocket(server, path);
-		expect(existsSync(path)).toBe(true);
-		await createClient(path);
-	});
+		test('should socket file exists', async () => {
+			const server = createServer();
+			await createLocalDomainSocket(server, path);
+			expect(existsSync(path)).toBe(true);
+			await createClient(path);
+		});
+	}
 });
