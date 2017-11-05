@@ -2,8 +2,7 @@
 import createLocalDomainSocket, { ensureLocalDomainPath } from '../src';
 import { resolve } from 'path';
 import net from 'net';
-import { writeFileSync, existsSync } from 'fs';
-import delay from 'delay';
+import { writeFileSync, existsSync } from 'fs
 
 describe('ensureLocalDomainPath', () => {
 	const { platform } = process;
