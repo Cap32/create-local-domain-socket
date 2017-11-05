@@ -3,6 +3,7 @@ import createLocalDomainSocket, { ensureLocalDomainPath } from '../src';
 import { resolve } from 'path';
 import net from 'net';
 import { writeFileSync, existsSync } from 'fs';
+import rimraf from 'rimraf';
 
 describe('ensureLocalDomainPath', () => {
 	const { platform } = process;
@@ -15,13 +16,13 @@ describe('ensureLocalDomainPath', () => {
 		expect(ensureLocalDomainPath).toThrow();
 	});
 
-	test('should convert to windows pipe path on win', () => {
+	test('should convert to windows named pipe path on win', () => {
 		process.platform = 'win32';
 		const path = ensureLocalDomainPath('/test');
 		expect(path).toBe('\\\\.\\pipe\\test');
 	});
 
-	test('should not convert to windows pipe path on darwin', () => {
+	test('should not convert to windows named pipe path on darwin', () => {
 		process.platform = 'darwin';
 		const path = ensureLocalDomainPath('/test');
 		expect(path).toBe('/test');
@@ -56,6 +57,7 @@ describe('createLocalDomainSocket', () => {
 		}
 		servers.clear();
 		clients.clear();
+		rimraf.sync(path);
 	});
 
 	test('connect', async () => {
@@ -93,6 +95,15 @@ describe('createLocalDomainSocket', () => {
 	});
 
 	if (process.platform !== 'win32') {
+		test('should not throw ENOTSOCK if path is already exist and not empty', async () => {
+			writeFileSync(path, 'test');
+			const server = createServer();
+			const listenToServer = createLocalDomainSocket(server, path);
+			await expect(listenToServer).rejects.toMatchObject({
+				message: `connect ENOTSOCK ${path}`,
+			});
+		});
+
 		test('should not throw EADDRINUSE if there is an empty file', async () => {
 			writeFileSync(path, '');
 			const server = createServer();

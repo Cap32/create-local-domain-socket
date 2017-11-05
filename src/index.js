@@ -26,6 +26,7 @@ export default function createLocalDomainSocket(server, path, callback) {
 						stat(path, (e, stats) => {
 							if (!e && stats && !stats.size) {
 								rimraf(path, function handleRemoveError(err) {
+									/* istanbul ignore next */
 									if (err) { reject(err); }
 									else { server.listen(path, resolve); }
 								});
@@ -36,6 +37,7 @@ export default function createLocalDomainSocket(server, path, callback) {
 						});
 					}
 					else {
+						/* istanbul ignore next */
 						reject(err);
 					}
 				});

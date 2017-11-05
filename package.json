@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "start": "yarn test -- --watchAll",
-    "test": "cross-env NODE_ENV=development jest",
+    "test": "cross-env NODE_ENV=development jest --coverage",
+    "coverage": "cat ./coverage/lcov.info | coveralls",
     "prebuild": "rimraf lib",
     "build": "babel src -d lib",
     "preversion": "yarn test && yarn build"
@@ -37,6 +38,7 @@
     "babel-polyfill": "^6.13.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.11.6",
+    "coveralls": "^3.0.0",
     "cross-env": "^4.0.0",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
