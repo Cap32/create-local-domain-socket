@@ -4,6 +4,8 @@ import { resolve } from 'path';
 import net from 'net';
 import { writeFileSync, existsSync } from 'fs';
 import rimraf from 'rimraf';
+import http from 'http';
+import WebSocket from 'ws';
 
 describe('ensureLocalDomainPath', () => {
 	const { platform } = process;
@@ -116,4 +118,44 @@ describe('createLocalDomainSocket', () => {
 			await createClient(path);
 		});
 	}
+});
+
+describe('integrate with ws', () => {
+	const path = ensureLocalDomainPath(resolve(__dirname, 'tmp.sock'));
+
+	let ws;
+	let wss;
+	let server;
+
+	afterEach((done) => {
+		server && server.close();
+		ws && ws.terminate();
+		wss ? wss.close(done) : done();
+	});
+
+	test('connect with ws', (done) => {
+		server = http.createServer((req, res) => {
+			const body = http.STATUS_CODES[426];
+			res.writeHead(426, {
+				'Content-Length': body.length,
+				'Content-Type': 'text/plain'
+			});
+			res.end(body);
+		});
+
+		createLocalDomainSocket(server, path, (err) => {
+			if (err) { done.fail(err); }
+			else {
+				wss = new WebSocket.Server({ server });
+				ws = new WebSocket(`ws+unix:${path}`);
+				ws.on('message', (message) => {
+					expect(message).toBe('hello');
+					done();
+				});
+				wss.on('connection', (client) => {
+					client.send('hello');
+				});
+			}
+		});
+	});
 });

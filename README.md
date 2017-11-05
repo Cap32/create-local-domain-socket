@@ -57,6 +57,8 @@ A tiny helper function to ensure local domain path.
 ###### Example on Windows:
 
 ```js
+import { ensureLocalDomainPath } from 'create-local-domain-socket';
+
 const path = ensureLocalDomainPath('/test');
 console.log(path); /* "\\\\.\\pipe\\test" */
 ```
@@ -66,6 +68,36 @@ console.log(path); /* "\\\\.\\pipe\\test" */
 
 ```bash
 $ npm install --save create-local-domain-socket
+```
+
+## Example to integrate with [ws](https://github.com/websockets/ws)
+
+```js
+import WebSocket from 'ws';
+import createLocalDomainSocket from 'createLocalDomainSocket';
+
+const server = http.createServer((req, res) => {
+  const body = http.STATUS_CODES[426];
+  res.writeHead(426, {
+    'Content-Length': body.length,
+    'Content-Type': 'text/plain'
+  });
+  res.end(body);
+});
+
+createLocalDomainSocket(server, path, (err) => {
+  if (err) { done.fail(err); }
+  else {
+    const wss = new WebSocket.Server({ server });
+    const ws = new WebSocket(`ws+unix:${path}`);
+    ws.on('message', (message) => {
+      /* do sth... */
+    });
+    wss.on('connection', (client) => {
+      client.send('sth');
+    });
+  }
+});
 ```
 
 
