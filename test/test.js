@@ -43,7 +43,7 @@ describe('createLocalDomainSocket', () => {
 		return new Promise((resolve, reject) => {
 			const client = new net.Socket();
 			client.on('error', reject);
-			client.connect({ path }, resolve);
+			client.connect({ path }, () => resolve(client));
 			clients.add(client);
 		});
 	};
@@ -73,9 +73,9 @@ describe('createLocalDomainSocket', () => {
 	test('re-connect', async () => {
 		const server1 = createServer();
 		await createLocalDomainSocket(server1, path);
-		await createClient(path);
-		server1.close();
-		await delay(2000);
+		const client = await createClient(path);
+		client.destroy();
+		await new Promise((resolve) => server1.close(resolve));
 		const server2 = createServer();
 		await createLocalDomainSocket(server2, path);
 		await createClient(path);
