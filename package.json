@@ -20,7 +20,20 @@
   "engines": {
     "node": ">=4.8"
   },
-  "keywords": [],
+  "keywords": [
+    "socket",
+    "ipc",
+    "unix",
+    "domain",
+    "named",
+    "pipe",
+    "unix domain sockets",
+    "named pipe",
+    "windows",
+    "darwin",
+    "win",
+    "helper"
+  ],
   "license": "MIT",
   "dependencies": {
     "call-me-maybe": "^1.0.1",

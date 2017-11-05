@@ -10,10 +10,13 @@ A helper function to create cross-platform local domain sockets (UNIX domain soc
 
 ## Usage
 
+### createLocalDomainSocket
+
 ```js
 import createLocalDomainSocket from 'create-local-domain-socket';
 import http from 'http';
 
+/* create a whatever you want server */
 const server = http.createServer((req, res) => {
   const body = http.STATUS_CODES[426];
   res.writeHead(426, {
@@ -23,9 +26,45 @@ const server = http.createServer((req, res) => {
   res.end(body);
 });
 
-createLocalDomainSocket(server, '/tmp/test.sock', () => {
-  console.log('socket server started');
+createLocalDomainSocket(server, '/tmp/test.sock', (err) => {
+  if (err) { console.error(err); }
+  else { console.log('socket server started'); }
 });
+```
+
+If you prefer using promise:
+
+```js
+const server = http.createServer();
+createLocalDomainSocket(server, '/tmp/test.sock')
+  .then(() => console.log('socket server started'))
+  .catch((err) => console.error(err))
+;
+```
+
+#### Arguments
+
+1. `server` \<Object\>: A server object. Should include a `.listen()` and `.on('error')` methods to start and catch errors
+2. `path` \<String\>: Local domain path
+3. `callback` \<Function\> (Optional): A callback function. The first argument is an `Error` object if listen failed. If `callback` is `undefined`, it will return a promise
+
+
+### ensureLocalDomainPath
+
+A tiny helper function to ensure local domain path.
+
+###### Example on Windows:
+
+```js
+const path = ensureLocalDomainPath('/test');
+console.log(path); /* "\\\\.\\pipe\\test" */
+```
+
+
+## Installation
+
+```bash
+$ npm install --save create-local-domain-socket
 ```
 
 
