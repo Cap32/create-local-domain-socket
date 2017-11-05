@@ -59,6 +59,7 @@ describe('createLocalDomainSocket', () => {
 	test('connect', async () => {
 		const server = createServer();
 		await createLocalDomainSocket(server, path);
+		console.log('server started', path);
 		await createClient(path);
 	});
 
