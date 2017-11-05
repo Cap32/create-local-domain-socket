@@ -5,7 +5,9 @@ import rimraf from 'rimraf';
 import callMaybe from 'call-me-maybe';
 
 export function ensureLocalDomainPath(path) {
-	if (process.platform === 'win32') {
+	if (typeof path !== 'string') { throw new Error('path must be string'); }
+
+	if (process.platform === 'win32' && !path.startsWith('\\\\.\\pipe\\')) {
 		path = path.replace(/^\//, '').replace(/\//g, '-');
 		return `\\\\.\\pipe\\${path}`;
 	}
