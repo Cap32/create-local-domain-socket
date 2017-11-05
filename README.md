@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/Cap32/create-local-domain-socket.svg?branch=master)](https://travis-ci.org/Cap32/create-local-domain-socket)
 [![Build status](https://ci.appveyor.com/api/projects/status/g0wa7fu7n8fnpfc2/branch/master?svg=true)](https://ci.appveyor.com/project/Cap32/create-local-domain-socket/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/Cap32/create-local-domain-socket/badge.svg?branch=master)](https://coveralls.io/github/Cap32/create-local-domain-socket?branch=master)
+[![npm version](https://badge.fury.io/js/create-local-domain-socket.svg)](https://badge.fury.io/js/create-local-domain-socket)
 [![License](https://img.shields.io/badge/license-MIT_License-blue.svg?style=flat)](https://github.com/Cap32/create-local-domain-socket/blob/master/LICENSE.md)
 
 A helper function to create cross-platform local domain sockets (UNIX domain sockets on UNIX, and named pipe sockets on Windows).
