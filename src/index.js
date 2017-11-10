@@ -8,7 +8,7 @@ export function ensureLocalDomainPath(path) {
 	if (typeof path !== 'string') { throw new Error('path must be string'); }
 
 	if (process.platform === 'win32' && !path.startsWith('\\\\.\\pipe\\')) {
-		path = path.replace(/^\//, '').replace(/\//g, '-');
+		path = path.replace(/^\//, '').replace(/[/:]/g, '-');
 		return `\\\\.\\pipe\\${path}`;
 	}
 	return path;
