@@ -90,7 +90,7 @@ createLocalDomainSocket(server, path, (err) => {
   if (err) { done.fail(err); }
   else {
     const wss = new WebSocket.Server({ server });
-    const ws = new WebSocket(`ws+unix:${path}`);
+    const ws = new WebSocket(`ws+unix://${path}`);
     ws.on('message', (message) => {
       /* do sth... */
     });
