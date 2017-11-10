@@ -147,7 +147,9 @@ describe('integrate with ws', () => {
 			if (err) { done.fail(err); }
 			else {
 				wss = new WebSocket.Server({ server });
-				ws = new WebSocket(`ws+unix:${path}`);
+				ws = new WebSocket(`ws+unix://${path}`);
+				wss.on('error', done.fail);
+				ws.on('error', done.fail);
 				ws.on('message', (message) => {
 					expect(message).toBe('hello');
 					done();
