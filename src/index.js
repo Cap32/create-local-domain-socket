@@ -25,9 +25,9 @@ export default function createLocalDomainSocket(server, path, callback) {
 					if (err.code === 'ECONNREFUSED' || err.code === 'ENOTSOCK') {
 						stat(path, (e, stats) => {
 							if (!e && stats && !stats.size) {
-								rimraf(path, function handleRemoveError(err) {
+								rimraf(path, function handleRemoveError(rimrafErr) {
 									/* istanbul ignore next */
-									if (err) { reject(err); }
+									if (rimrafErr) { reject(err); }
 									else { server.listen(path, resolve); }
 								});
 							}
