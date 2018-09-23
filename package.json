@@ -1,6 +1,6 @@
 {
   "name": "create-local-domain-socket",
-  "description": "A helper function to create cross-platform local domain sockets",
+  "description": "A helper function to create cross-platform local domain sockets (named pipes polyfill in windows)",
   "version": "1.0.2",
   "main": "lib/index",
   "files": [
